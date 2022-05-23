@@ -30,3 +30,8 @@ if __name__ == "__main__":
     with open("mounting_commands.sh", 'w') as file:
         file.write('\n'.join(lines))
     os.system("chmod +x mounting_commands.sh")
+    for i in range(len(disks)):
+        print(f"💿 Mounting /dev/{disks[i]} to /mnt/{MOUNTING_FOLDER}{i+1} ...")
+        stat = os.system(f"sudo mount /dev/{disks[i]} /mnt/{MOUNTING_FOLDER}{i+1}")
+        if stat == 0:
+            print(f"✅ /dev/{disks[i]} has been mounted !")
