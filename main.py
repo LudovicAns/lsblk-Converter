@@ -28,8 +28,9 @@ def get_mountable_disk() -> [str]:
 
 
 if __name__ == "__main__":
-    with open("./conf.json", 'r') as configFile:
-        config = json.load(configFile)
+    config_path = Path(__file__)
+    with open(config_path.parent.joinpath("conf.json"), 'r') as config_file:
+        config = json.load(config_file)
         MOUNTING_POINT = config["diskName"]
         MOUNTING_PATH = config["mountingPath"]
         MOUNTING_SKRIPT_PATH = config["mountingSkriptPath"]
