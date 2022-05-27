@@ -1,0 +1,8 @@
+{
+  "confVersion": 1,
+  "mountingPath": "/mnt/",
+  "diskName": "hdd",
+  "createMountingSkript": true,
+  "mountingSkriptPath": "./",
+  "directMountDisk": true
+}

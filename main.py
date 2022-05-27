@@ -1,5 +1,11 @@
 import os
+import json
 from pathlib import Path
+
+
+MOUNTING_POINT = "disk"
+MOUNTING_PATH = "/mnt/"
+MOUNTING_SKRIPT_PATH = "./"
 
 
 def get_mountable_disk() -> [str]:
@@ -22,16 +28,26 @@ def get_mountable_disk() -> [str]:
 
 
 if __name__ == "__main__":
-    MOUNTING_FOLDER = "hdd"
+    with open("./conf.json", 'r') as configFile:
+        config = json.load(configFile)
+        MOUNTING_POINT = config["diskName"]
+        MOUNTING_PATH = config["mountingPath"]
+        MOUNTING_SKRIPT_PATH = config["mountingSkriptPath"]
+
     disks = get_mountable_disk()
     lines = []
+
     for i in range(len(disks)):
-        lines.append(f"sudo mount /dev/{disks[i]} /mnt/{MOUNTING_FOLDER}{i+1}")
+        lines.append(f"sudo mount /dev/{disks[i]} {MOUNTING_PATH}{MOUNTING_POINT}{i+1}")
+
     with open("mounting_commands.sh", 'w') as file:
         file.write('\n'.join(lines))
     os.system("chmod +x mounting_commands.sh")
+
     for i in range(len(disks)):
-        print(f"💿 Mounting /dev/{disks[i]} to /mnt/{MOUNTING_FOLDER}{i+1} ...")
-        stat = os.system(f"sudo mount /dev/{disks[i]} /mnt/{MOUNTING_FOLDER}{i+1}")
-        if stat == 0:
+        print(f"💿 Mounting /dev/{disks[i]} to {MOUNTING_PATH}{MOUNTING_POINT}{i+1} ...")
+        disk_folder = Path(f"{MOUNTING_PATH}{MOUNTING_POINT}{i+1}")
+        disk_folder.mkdir(parents=True, exist_ok=True)
+
+        if os.system(f"sudo mount /dev/{disks[i]} {MOUNTING_PATH}{MOUNTING_POINT}{i+1}") == 0:
             print(f"✅ /dev/{disks[i]} has been mounted !")
