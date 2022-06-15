@@ -1,30 +1,13 @@
 import os
 import json
 from pathlib import Path
+from typing import List
 
+from DiskManager import DiskManager
 
 MOUNTING_POINT = "disk"
 MOUNTING_PATH = "/mnt/"
 MOUNTING_SKRIPT_PATH = "./"
-
-
-def get_mountable_disk() -> [str]:
-    os.system("lsblk > lsblk.txt")
-    disks = []
-    with open(Path("lsblk.txt"), 'r') as file:
-        lines = file.readlines()
-    for i in range(len(lines)):
-        line = lines[i]
-        if line.startswith("sd"):
-            j = 1
-            if lines[i+j].startswith("└─") or lines[i+j].startswith("├─"):
-                while lines[i+j].startswith("└─") or lines[i+j].startswith("├─"):
-                    next_line = lines[i+j].split(" ")[0][2:]
-                    disks.append(next_line)
-                    j += 1
-            else:
-                disks.append(line.split(" ")[0])
-    return disks
 
 
 if __name__ == "__main__":
@@ -35,8 +18,13 @@ if __name__ == "__main__":
         MOUNTING_PATH = config["mountingPath"]
         MOUNTING_SKRIPT_PATH = config["mountingSkriptPath"]
 
-    disks = get_mountable_disk()
+    dm = DiskManager()
+    disks = dm.get_mountable_disk()
     lines = []
+
+    print(MOUNTING_PATH,  MOUNTING_POINT, MOUNTING_SKRIPT_PATH, "\n")
+    print(disks)
+    exit()
 
     for i in range(len(disks)):
         lines.append(f"sudo mount /dev/{disks[i]} {MOUNTING_PATH}{MOUNTING_POINT}{i+1}")
